@@ -1,15 +1,17 @@
+from FileManager import FileManager
 from VideoGenerator import VideoGenerator
 
-generator = VideoGenerator("D:\MassProduction", 2, 1)
+fileManager = FileManager("D:\MassProduction")
+generator = VideoGenerator(fileManager, 2, 2)
 #Video Files
 generator.SelectVideoFiles()
 #Pick Image File
 generator.SelectImageFile()
 #Write Description
-
+generator.GenerateDescription()
 #Generate the Video with FFMPEG
 
 #Upload to YouTube
 
 #Clean up files
-generator.CleanUpTest()
+fileManager.CleanUpTest()
