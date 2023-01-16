@@ -22,6 +22,9 @@ class FileManager:
             shutil.move(file, self.musicSourceDir)
 
     def ReturnImageFiles(self):
+        newImage = os.path.join(self.inProgressDir, "newImage.png")
+        os.remove(newImage)
+
         usedImageFiles = glob.glob( self.inProgressDir+"\*.png")
         for file in usedImageFiles:
             shutil.move(file, self.imageSourceDir)

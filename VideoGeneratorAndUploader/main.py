@@ -3,15 +3,17 @@ from VideoGenerator import VideoGenerator
 
 fileManager = FileManager("D:\MassProduction")
 generator = VideoGenerator(fileManager, 2, 2)
-#Video Files
-generator.SelectVideoFiles()
-#Pick Image File
-generator.SelectImageFile()
-#Write Description
-generator.GenerateDescription()
-#Generate the Video with FFMPEG
-
-#Upload to YouTube
-
-#Clean up files
-fileManager.CleanUpTest()
+try:
+    #Video Files
+    generator.SelectVideoFiles()
+    #Pick Image File
+    generator.SelectImageFile()
+    #Write Description
+    musLDes = generator.GenerateMusicListAndDescription()
+    #Generate the Video with FFMPEG
+    generator.GenerateVideo(musLDes[0], musLDes[1])
+    #generator.GenerateVideoPS()
+    #Upload to YouTube
+finally:
+    #Clean up files
+    fileManager.CleanUpTest()
