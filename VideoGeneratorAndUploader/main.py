@@ -9,9 +9,9 @@ try:
     #Pick Image File
     generator.SelectImageFile()
     #Write Description
-    musLDes = generator.GenerateMusicListAndDescription()
+    (musicList, description) = generator.GenerateMusicListAndDescription()
     #Generate the Video with FFMPEG
-    generator.GenerateVideo(musLDes[0], musLDes[1])
+    generator.GenerateVideo(musicList)
     #generator.GenerateVideoPS()
     #Upload to YouTube
 finally:

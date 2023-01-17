@@ -98,53 +98,25 @@ class VideoGenerator():
 
         return (musicList, description)
         
-    def GenerateVideo(self, musicList:list, description:str):
+    def GenerateVideo(self, musicList:list):
         image = glob.glob( self.fileManager.inProgressDir+"\*.png")[0]
-        print (image)
-        # #musicList = os.path.join(self.fileManager.inProgressDir, "musicList.txt")
         outputLocation = os.path.join(self.fileManager.inProgressDir, "output.mp4")
-        # audioStreams = list()
-
-        # for audio in musicList:
-        #     audioStreams.append(ffmpeg.input(audio))
-
-        # #joined = ffmpeg.concat(*audioStreams, v=1, a=1)
-        # joined = ffmpeg.concat(audioStreams[0], audioStreams[1], v=1, a=1)
-
-        # output = ffmpeg.output(joined, outputLocation, format="mp4")
-        # output.run()
-        #-----------------------------------------------------------------------------------
-        # imageStream = ffmpeg.input(image, pattern_type='glob', framerate=self.repeatNum)
-        # output = ffmpeg.output(imageStream, outputLocation, format="mp4")
-        # output.run()
-
-        # imageInputStream = ffmpeg.input(image).video
-        # inputStreamA = ffmpeg.input(musicList[0])
-        # inputStreamB = ffmpeg.input(musicList[1])
-
-        # (
-        #     ffmpeg
-        #     .concat(imageInputStream, inputStreamA, v=1, a=1)
-        #     .output(outputLocation, format="mp4")
-        #     .run(overwrite_output=True)
-        # )
-
-         # create the audio clip object
-        audio_clip = AudioFileClip(musicList[0])
-        # create the image clip object
-        rimage = self.resizeImage(image)
-        image_clip = ImageClip(rimage)
-        #image_clip.resize(2)
-        # use set_audio method from image clip to combine the audio with the image
-        video_clip = image_clip.set_audio(audio_clip)
-        #video_clip = VideoFileClip("my_video_file.mp4")
-        # specify the duration of the new clip to be the duration of the audio clip
-        video_clip.duration  = audio_clip.duration
-        # set the FPS to 1
-        video_clip.fps = 1
-        #video_clip.resize(2)
-        # write the resuling video clip
-        video_clip.write_videofile(outputLocation, codec = "libx264")
+        
+        #Create an audio clip for each file and concatenate them
+        audioClips = list()
+        for music in musicList:
+                audioClips.append(AudioFileClip(music))
+        fullAudioClip = concatenate_audioclips(audioClips) 
+        
+        #Resized the image if needed so the dimensions of the image are not odd. 
+        #If they are odd the resulting video will be unviewable
+        newImage = self.resizeImage(image)
+        imageClip = ImageClip(newImage)
+        
+        videoClip = imageClip.set_audio(fullAudioClip)
+        videoClip.duration  = fullAudioClip.duration
+        videoClip.fps = 1
+        videoClip.write_videofile(outputLocation, codec = "libx264")
        
 
 
@@ -170,6 +142,8 @@ class VideoGenerator():
         image = Image.open(imageLocation)
         width, height = image.size
 
+        #If the height or width is odd, subtract 1 so it is even
+        #If they are odd the resulting video will be unviewable
         if width% 2 != 0:
             width = width - 1
         if height% 2 != 0:

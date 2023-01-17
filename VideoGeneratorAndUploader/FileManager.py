@@ -23,7 +23,8 @@ class FileManager:
 
     def ReturnImageFiles(self):
         newImage = os.path.join(self.inProgressDir, "newImage.png")
-        os.remove(newImage)
+        if os.path.exists(newImage):
+            os.remove(newImage)
 
         usedImageFiles = glob.glob( self.inProgressDir+"\*.png")
         for file in usedImageFiles:
