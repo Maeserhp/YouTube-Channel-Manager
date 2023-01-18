@@ -100,7 +100,7 @@ class VideoGenerator():
         
     def GenerateVideo(self, musicList:list):
         image = glob.glob( self.fileManager.inProgressDir+"\*.png")[0]
-        outputLocation = os.path.join(self.fileManager.inProgressDir, "output.mp4")
+        #outputLocation = os.path.join(self.fileManager.inProgressDir, "output.mp4")
         
         #Create an audio clip for each file and concatenate them
         audioClips = list()
@@ -114,12 +114,12 @@ class VideoGenerator():
         imageClip = ImageClip(newImage)
         
         videoClip = imageClip.set_audio(fullAudioClip)
-        videoClip.duration  = fullAudioClip.duration
+        videoClip.duration  = fullAudioClip.duration + 15
         videoClip.fps = 1
-        videoClip.write_videofile(outputLocation, codec = "libx264")
+        videoClip.write_videofile(self.fileManager.outputFile, codec = "libx264")
        
 
-
+    #Not working. Probably not worth fixing
     def GenerateVideoPS(self):
         image = glob.glob( self.fileManager.inProgressDir+"\*.png")[0]
         musicList = os.path.join(self.fileManager.inProgressDir, "musicList.txt")
@@ -131,6 +131,9 @@ class VideoGenerator():
             print("An error occured: %s", completed.stderr)
         else:
             print("Hello command executed successfully!")
+
+
+
 
     def writeTextFile(self, fileName:str, text:str):
         path = os.path.join(self.fileManager.inProgressDir, f"{fileName}.txt")

@@ -11,10 +11,13 @@ class FileManager:
         self.inProgressDir = baseDir+"\VideoInProgress"
         self.musicDB = baseDir+"\MusicDB.csv"
 
+        self.outputFile = os.path.join(self.inProgressDir, "output.mp4")
+
+
     def CleanUpTest(self):
         self.ReturnMusicFiles()
         self.ReturnImageFiles()
-        self.DeleteTxtFiles()
+        #self.DeleteTxtFiles()
 
     def ReturnMusicFiles(self):
         usedMusicFiles = glob.glob( self.inProgressDir+"\*.mp3")
