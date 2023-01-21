@@ -42,6 +42,8 @@ class VideoGenerator():
         description = "Thank you for watching this video. I hope you enjoy this collection of lofi music! Please consider liking this video and subscribing to our channel. It would help us out so much and help other people like you find this great music. \n\n#lofi #chill #lofihiphop \n\nTracklist and Credits:\n"
         totalTime = 0
 
+        self.fileManager.DeleteTxtFiles()
+        self.fileManager.DeleteVidoeFiles()
         #Put the csv data into a list
         fileData = []
         pathCol = []

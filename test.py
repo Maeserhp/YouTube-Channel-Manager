@@ -3,6 +3,12 @@
     #print(f)
 
 #Test enumerate
-links = ['apple', 'banana', 'orange', 'grape']
-for idx, link in enumerate(links):
-    print(f'{link} is in position {idx} in the list')
+# links = ['apple', 'banana', 'orange', 'grape']
+# for idx, link in enumerate(links):
+#     print(f'{link} is in position {idx} in the list')
+
+#Test string litteral
+description = "Hello\nWorld"
+description = '%'.join(description.splitlines())
+
+print (description)

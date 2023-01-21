@@ -6,10 +6,12 @@ import random
 import sys
 import time
 
-from apiclient.discovery import build
-from apiclient.errors import HttpError
-from apiclient.http import MediaFileUpload
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaFileUpload
 from oauth2client.client import flow_from_clientsecrets
+#from google_auth_oauthlib.flow import InstalledAppFlow
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 
@@ -69,8 +71,11 @@ VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 def get_authenticated_service(args):
   flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
-    scope=YOUTUBE_UPLOAD_SCOPE,
-    message=MISSING_CLIENT_SECRETS_MESSAGE)
+     scope=YOUTUBE_UPLOAD_SCOPE,
+     message=MISSING_CLIENT_SECRETS_MESSAGE)
+  # flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE,
+  #    scope=YOUTUBE_UPLOAD_SCOPE,
+  #    message=MISSING_CLIENT_SECRETS_MESSAGE)
 
   storage = Storage("%s-oauth2.json" % sys.argv[0])
   credentials = storage.get()
@@ -166,6 +171,10 @@ if __name__ == '__main__':
   argparser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES,
     default=VALID_PRIVACY_STATUSES[0], help="Video privacy status.")
   args = argparser.parse_args()
+
+  print ("PRIVACY ARG: "+args.privacyStatus)
+  print (args.description)
+
 
   if not os.path.exists(args.file):
     exit("Please specify a valid file using the --file= parameter.")
