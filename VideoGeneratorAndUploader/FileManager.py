@@ -14,17 +14,17 @@ class FileManager:
 
         self.outputFile = os.path.join(self.inProgressDir, "output.mp4")
 
-    def CleanUpProduction(self):
+    def ArchiveAllFiles(self):
         self.ArchiveUsedMusicFiles()
         self.ArchiveUsedImageFiles()
         self.ArchiveVideoInfo
 
-    def CleanUpTest(self):
+    def ReturnAndDeleteFiles(self):
         self.MoveMusicFiles()
         self.MoveImageFiles()
-        #self.DeleteTxtFiles()
+        self.DeleteTxtFiles()
 
-    def CleanUpFail(self):
+    def ReturnFiles(self):
         self.MoveMusicFiles()
         self.MoveImageFiles()
 
@@ -92,7 +92,12 @@ class FileManager:
         for file in txtFiles:
             os.remove(file)
 
-    def DeleteVidoeFiles(self):
+    def DeleteVideoFiles(self):
         videoFiles = glob.glob( self.inProgressDir+"\*.mp4")
         for file in videoFiles:
             os.remove(file)
+
+    
+    #TODO: implement this method
+    def CleanArchives(self):
+        print("I didn't clean the archives. But I'll try to get to it tommorrow")

@@ -175,7 +175,6 @@ if __name__ == '__main__':
   print ("PRIVACY ARG: "+args.privacyStatus)
   print (args.description)
 
-
   if not os.path.exists(args.file):
     exit("Please specify a valid file using the --file= parameter.")
 

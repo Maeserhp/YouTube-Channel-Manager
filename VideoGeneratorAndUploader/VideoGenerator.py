@@ -1,5 +1,4 @@
 #packages
-import ffmpeg
 import mutagen
 from mutagen.mp3 import MP3
 from moviepy.editor import *
@@ -19,18 +18,17 @@ class VideoGenerator():
         self.trackNum = trackNum
         self.repeatNum = repeatNum
 
+
     def SelectVideoFiles(self):
-        #Using for loop to randomly choose multiple files
         for i in range(self.trackNum):
-            #Variable random_file stores the name of the random file chosen
             randomFile = random.choice(glob.glob( self.fileManager.musicSourceDir+"\*.mp3"))
-            #"shutil.move" function moves file from one directory to another
             shutil.move(randomFile, self.fileManager.inProgressDir)
+
 
     def SelectImageFile(self):
         randomFile = random.choice(glob.glob(self.fileManager.imageSourceDir+"\*.png"))
-        #"shutil.move" function moves file from one directory to another
         shutil.move(randomFile, self.fileManager.inProgressDir)
+
 
     def GenerateMusicListAndDescription(self):
         filePathCol = 0
@@ -42,8 +40,10 @@ class VideoGenerator():
         description = "Thank you for watching this video. I hope you enjoy this collection of lofi music! Please consider liking this video and subscribing to our channel. It would help us out so much and help other people like you find this great music. \n\n#lofi #chill #lofihiphop \n\nTracklist and Credits:\n"
         totalTime = 0
 
+        #Clean out any files that might already exist
         self.fileManager.DeleteTxtFiles()
-        self.fileManager.DeleteVidoeFiles()
+        self.fileManager.DeleteVideoFiles()
+
         #Put the csv data into a list
         fileData = []
         pathCol = []
@@ -78,6 +78,7 @@ class VideoGenerator():
                     totalTime += mp3Length
                     
                 musicList.append(file)
+
                 #escape any apostrophes
                 file = file.replace("'",r"'\''")
                 self.writeTextFile("musicList", f"file '{file}'\n")
@@ -100,6 +101,7 @@ class VideoGenerator():
 
         return (musicList, description)
         
+
     def GenerateVideo(self, musicList:list):
         image = glob.glob( self.fileManager.inProgressDir+"\*.png")[0]
         #outputLocation = os.path.join(self.fileManager.inProgressDir, "output.mp4")
@@ -119,22 +121,6 @@ class VideoGenerator():
         videoClip.duration  = fullAudioClip.duration + 15
         videoClip.fps = 1
         videoClip.write_videofile(self.fileManager.outputFile, codec = "libx264")
-       
-
-    #Not working. Probably not worth fixing
-    def GenerateVideoPS(self):
-        image = glob.glob( self.fileManager.inProgressDir+"\*.png")[0]
-        musicList = os.path.join(self.fileManager.inProgressDir, "musicList.txt")
-
-        cmd = f"ffmpeg -loop 1 -framerate {self.repeatNum} -i {image} -f concat -safe 0 -i {musicList} -c:v libx264 -preset medium -tune stillimage -crf 18 -b:a 192k -shortest -pix_fmt yuv420p -movflags +faststart output.mp4"
-        
-        completed = subprocess.run(["powershell", "-Command", cmd], capture_output=True)
-        if completed.returncode != 0:
-            print("An error occured: %s", completed.stderr)
-        else:
-            print("Hello command executed successfully!")
-
-
 
 
     def writeTextFile(self, fileName:str, text:str):
@@ -142,6 +128,7 @@ class VideoGenerator():
         txtFile = open(path, "a+")
         txtFile.write(text)
         txtFile.close()
+
 
     def resizeImage(self, imageLocation):
         image = Image.open(imageLocation)
