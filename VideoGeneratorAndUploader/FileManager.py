@@ -13,11 +13,12 @@ class FileManager:
         self.musicDB = baseDir+"\MusicDB.csv"
 
         self.outputFile = os.path.join(self.inProgressDir, "output.mp4")
+        self.dateFormat = "%m-%d-%Y %H-%M-%S"
 
     def ArchiveAllFiles(self):
         self.ArchiveUsedMusicFiles()
         self.ArchiveUsedImageFiles()
-        self.ArchiveVideoInfo
+        self.ArchiveVideoInfo()
 
     def ReturnAndDeleteFiles(self):
         self.MoveMusicFiles()
@@ -29,33 +30,33 @@ class FileManager:
         self.MoveImageFiles()
 
     def ArchiveUsedMusicFiles(self):
-        title = "Used- " + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+        title = "Used-" + datetime.now().strftime(self.dateFormat)
         archivePath = os.path.join( self.musicSourceDir, "UsedMusic", title)
         
         #Create a new file in usedMusic directory with the date time
-        os.mkdir(archivePath)
+        os.makedirs(archivePath)
         
         #Move the mp3 files into that directory
         self.MoveMusicFiles(archivePath)
 
 
     def ArchiveUsedImageFiles(self):
-        title = "Used- " + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-        archivePath = os.path.join( self.musicSourceDir, "UsedImages", title)
+        title = "Used-" + datetime.now().strftime(self.dateFormat)
+        archivePath = os.path.join( self.imageSourceDir, "UsedImages", title)
        
        #Create a new file in usedMusic directory with the date time
-        os.mkdir(archivePath)
+        os.makedirs(archivePath)
         
         #Move the png files into that directory
         self.MoveImageFiles(archivePath)
 
 
     def ArchiveVideoInfo(self):
-        title = "VideoInfo- " + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+        title = "VideoInfo-" + datetime.now().strftime(self.dateFormat)
         archivePath = os.path.join( self.baseDir, "Videos", title)
         
         #Create a new file in usedMusic directory with the date time
-        os.mkdir(archivePath)
+        os.makedirs(archivePath)
         
         #Move the txt files into that directory
         txtFiles = glob.glob( self.inProgressDir+"\*.txt")
