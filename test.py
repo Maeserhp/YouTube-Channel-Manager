@@ -8,7 +8,12 @@
 #     print(f'{link} is in position {idx} in the list')
 
 #Test string litteral
-description = "Hello\nWorld"
-description = '%'.join(description.splitlines())
+# description = "Hello\nWorld"
+# description = '%'.join(description.splitlines())
 
-print (description)
+# print (description)
+
+#Test printing number
+num = 2
+thing = "thing"
+print (f'{thing}-{num}')

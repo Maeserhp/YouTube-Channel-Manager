@@ -23,7 +23,7 @@ imageExtensions = [".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".g
                     ".k25", ".bmp", ".dib", ".heif", ".heic", ".ind", ".indd", ".indt", ".jp2", ".j2k", ".jpf", ".jpf", ".jpx", ".jpm", ".mj2", ".svg", ".svgz", ".ai", ".eps", ".ico"]
 
 class MoverHandler(FileSystemEventHandler):
-    count = 1
+    #count = 1
 
     # ? THIS FUNCTION WILL RUN WHENEVER THERE IS A CHANGE IN "source_dir"
     # ? .upper is for not missing out on files with uppercase extensions
@@ -36,11 +36,20 @@ class MoverHandler(FileSystemEventHandler):
     def CheckImageFiles(self, entry, name):  # * Checks all Image Files
         for imageExtension in imageExtensions:
             if name.endswith(imageExtension) or name.endswith(imageExtension.upper()):
+                count = self.getArtistImageCount() + 1
                 oldName = f'{sourceDir}\{entry.name}'
-                newName = f'{destDir}\{artistName}-{websiteName}-{artistHandel}-{self.count}{imageExtension}'
+                newName = f'{destDir}\{artistName}-{websiteName}-{artistHandel}-{count}{imageExtension}'
                 os.rename(oldName, newName)
                 logging.info(f"Moved image file: {name}")
-                self.count = self.count +1
+
+    def getArtistImageCount(self):
+        artistCount = 0
+        with scandir(destDir) as files:
+            for file in files:
+                if file.name.startswith(f'{artistName}-{websiteName}-{artistHandel}-'):
+                    artistCount  = artistCount + 1
+        return artistCount
+
 
 # ! NO NEED TO CHANGE BELOW CODE
 if __name__ == "__main__":
