@@ -1,5 +1,5 @@
 from datetime import datetime
-import os, random, shutil, glob, time, datetime
+import os, random, shutil, glob, time
 
 
 class FileManager:
@@ -71,7 +71,8 @@ class FileManager:
             shutil.move(file, archivePath)
 
         #Move output.mp4
-        shutil.move(self.outputFile, archivePath)
+        if os.path.exists(self.outputFile):
+            shutil.move(self.outputFile, archivePath)
 
 
     def CleanAllArchives(self):
@@ -109,12 +110,11 @@ class FileManager:
             folderDate = os.path.getctime(usedFolder)
             if date > folderDate:
                 # If there is no new folder to move the items to we can just delete the whole file
-                if newFolder == None:
-                        os.remove(usedFolder)
-                else:
+                if not newFolder == None:
                     usedFiles = os.listdir(usedFolder)
                     for file in usedFiles:
                         shutil.move(file, newFolder)
+                os.remove(usedFolder)
 
 
     def MoveMusicFiles(self, dir = None):
@@ -122,7 +122,10 @@ class FileManager:
 
         usedMusicFiles = glob.glob( self.inProgressDir+"\*.mp3")
         for file in usedMusicFiles:
-            shutil.move(file, dir)
+            if not os.path.exists(os.path.join(dir, os.path.basename(file))):
+                shutil.move(file, dir)
+            else:
+                os.remove(file)
 
     def MoveImageFiles(self, dir = None):
         if dir == None : dir = self.imageSourceDir
@@ -133,7 +136,11 @@ class FileManager:
 
         usedImageFiles = glob.glob( self.inProgressDir+"\*.png")
         for file in usedImageFiles:
-            shutil.move(file, dir)
+            if not os.path.exists(os.path.join(dir, os.path.basename(file))):
+                shutil.move(file, dir)
+            else:
+                os.remove(file)
+
 
     def DeleteTxtFiles(self):
         txtFiles = glob.glob( self.inProgressDir+"\*.txt")
