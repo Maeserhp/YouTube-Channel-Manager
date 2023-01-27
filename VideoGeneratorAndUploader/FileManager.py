@@ -1,5 +1,5 @@
 from datetime import datetime
-import os, random, shutil, glob
+import os, random, shutil, glob, time, datetime
 
 
 class FileManager:
@@ -7,10 +7,13 @@ class FileManager:
     def __init__(self, baseDir: str):    
         self.baseDir = baseDir
 
-        self.musicSourceDir = baseDir+"\Music"
-        self.imageSourceDir = baseDir+"\Images"
-        self.inProgressDir = baseDir+"\VideoInProgress"
-        self.musicDB = baseDir+"\MusicDB.csv"
+        self.musicSourceDir = os.path.join(baseDir, "Music")
+        self.imageSourceDir = os.path.join(baseDir, "Images")
+        self.inProgressDir = os.path.join(baseDir, "VideoInProgress")
+        self.musicDB = os.path.join(baseDir, "MusicDB.csv")
+        self.archivedImages =  os.path.join(self.imageSourceDir, "UsedImages")
+        self.archivedMusic =  os.path.join(self.musicSourceDir, "UsedMusic")
+
 
         self.outputFile = os.path.join(self.inProgressDir, "output.mp4")
         self.dateFormat = "%m-%d-%Y %H-%M-%S"
@@ -31,40 +34,69 @@ class FileManager:
 
     def ArchiveUsedMusicFiles(self):
         title = "Used-" + datetime.now().strftime(self.dateFormat)
-        archivePath = os.path.join( self.musicSourceDir, "UsedMusic", title)
+        archivePath = os.path.join( self.archivedMusic, title)
         
         #Create a new file in usedMusic directory with the date time
         os.makedirs(archivePath)
         
         #Move the mp3 files into that directory
         self.MoveMusicFiles(archivePath)
+        self.PrintFileCount(self.musicSourceDir)
+
 
 
     def ArchiveUsedImageFiles(self):
         title = "Used-" + datetime.now().strftime(self.dateFormat)
-        archivePath = os.path.join( self.imageSourceDir, "UsedImages", title)
+        archivePath = os.path.join( self.archivedImages, title)
        
        #Create a new file in usedMusic directory with the date time
         os.makedirs(archivePath)
         
         #Move the png files into that directory
         self.MoveImageFiles(archivePath)
+        self.PrintFileCount(self.imageSourceDir)
+
 
 
     def ArchiveVideoInfo(self):
         title = "VideoInfo-" + datetime.now().strftime(self.dateFormat)
-        archivePath = os.path.join( self.baseDir, "Videos", title)
+        archivePath = os.path.join(self.baseDir, "Videos", title)
         
         #Create a new file in usedMusic directory with the date time
         os.makedirs(archivePath)
         
         #Move the txt files into that directory
-        txtFiles = glob.glob( self.inProgressDir+"\*.txt")
+        txtFiles = glob.glob(self.inProgressDir+"\*.txt")
         for file in txtFiles:
             shutil.move(file, archivePath)
 
         #Move output.mp4
         shutil.move(self.outputFile, archivePath)
+
+
+
+    def CleanArchives(self):
+        #unArchive images
+        self.UnArchiveImages()
+        #unArchive music
+        #delete old videos/video info
+
+    # If an image has been archived for 6 months we can un archive it
+    def UnArchiveImages(self):
+        # 86400 seconds in a day
+        sixMonthsAgo = time.time() - 86400*6*30
+        # print(time.ctime(fourDaysAgo))
+        usedImageFolders = os.listdir(self.archivedImages)
+        for file in usedImageFolders:
+            usedFolder = os.path.join(self.archivedImages, file)
+            # Check the created date of the folder
+            fileDate = os.path.getctime(usedFolder)
+            if sixMonthsAgo > fileDate:
+                usedImages = os.listdir(usedFolder)
+                for image in usedImages:
+                    shutil.move(image, self.imageSourceDir)
+        self.PrintFileCount(self.imageSourceDir)
+
 
 
 
@@ -74,7 +106,6 @@ class FileManager:
         usedMusicFiles = glob.glob( self.inProgressDir+"\*.mp3")
         for file in usedMusicFiles:
             shutil.move(file, dir)
-
 
     def MoveImageFiles(self, dir = None):
         if dir == None : dir = self.imageSourceDir
@@ -87,7 +118,6 @@ class FileManager:
         for file in usedImageFiles:
             shutil.move(file, dir)
 
-
     def DeleteTxtFiles(self):
         txtFiles = glob.glob( self.inProgressDir+"\*.txt")
         for file in txtFiles:
@@ -98,7 +128,6 @@ class FileManager:
         for file in videoFiles:
             os.remove(file)
 
-    
-    #TODO: implement this method
-    def CleanArchives(self):
-        print("I didn't clean the archives. But I'll try to get to it tommorrow")
+    def PrintFileCount(self, dir):
+        print(f"{dir} contains {len(os.listdir(dir))} files")
+

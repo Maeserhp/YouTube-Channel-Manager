@@ -23,4 +23,5 @@ from VideoGeneratorAndUploader.FileManager import FileManager
 
 #test archive
 fileManager = FileManager("D:\MassProduction")
-fileManager.ArchiveVideoInfo()
+#fileManager.ArchiveVideoInfo()
+fileManager.UnArchiveImages()
