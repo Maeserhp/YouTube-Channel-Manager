@@ -9,6 +9,7 @@ repeatNum = 6 #6
 generator = VideoGenerator(fileManager, trackNum, repeatNum)
 uploader = VideoUploader()
 try:
+    fileManager.CleanAllArchives()
     generator.SelectVideoFiles()
     generator.SelectImageFile()
     (musicList, description) = generator.GenerateMusicListAndDescription()

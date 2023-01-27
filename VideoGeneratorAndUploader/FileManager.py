@@ -74,30 +74,47 @@ class FileManager:
         shutil.move(self.outputFile, archivePath)
 
 
+    def CleanAllArchives(self):
+        self.CleanImageArchive()
+        self.CleanMusicArchive()
+        self.CleanVideoArchive()
 
-    def CleanArchives(self):
-        #unArchive images
-        self.UnArchiveImages()
-        #unArchive music
-        #delete old videos/video info
-
-    # If an image has been archived for 6 months we can un archive it
-    def UnArchiveImages(self):
-        # 86400 seconds in a day
-        sixMonthsAgo = time.time() - 86400*6*30
-        # print(time.ctime(fourDaysAgo))
-        usedImageFolders = os.listdir(self.archivedImages)
-        for file in usedImageFolders:
-            usedFolder = os.path.join(self.archivedImages, file)
-            # Check the created date of the folder
-            fileDate = os.path.getctime(usedFolder)
-            if sixMonthsAgo > fileDate:
-                usedImages = os.listdir(usedFolder)
-                for image in usedImages:
-                    shutil.move(image, self.imageSourceDir)
+    # If an image has been archived for 6 months we can un-archive it
+    def CleanImageArchive(self):
+        # 86400 seconds in a day, 30 days in a month, for 6 months
+        sixMonthsAgo = time.time() - 86400*30*6
+        # print(time.ctime(sixMonthsAgo))
+        self.CleanArchiveFile(self.archivedImages, sixMonthsAgo, self.imageSourceDir)
         self.PrintFileCount(self.imageSourceDir)
 
+    # If a song has been archived for 1 month we can un-archive it
+    def CleanMusicArchive(self):
+        # 86400 seconds in a day, 30 days in a month, for 1 months
+        oneMonthsAgo = time.time() - 86400*30
+        # print(time.ctime(oneMonthsAgo))
+        self.CleanArchiveFile(self.archivedMusic, oneMonthsAgo, self.musicSourceDir)
+        self.PrintFileCount(self.musicSourceDir)
 
+    def CleanVideoArchive(self):
+         # 86400 seconds in a day, 30 days in a month, for 1 months
+        oneMonthsAgo = time.time() - 86400*30
+        # print(time.ctime(oneMonthsAgo))
+        self.CleanArchiveFile(self.archivedMusic, oneMonthsAgo)
+
+    def CleanArchiveFile(self, archiveFolder, date, newFolder = None):
+        usedFolders = os.listdir(archiveFolder)
+        for folder in usedFolders:
+            usedFolder = os.path.join(archiveFolder, folder)
+            # Check the created date of the folder
+            folderDate = os.path.getctime(usedFolder)
+            if date > folderDate:
+                # If there is no new folder to move the items to we can just delete the whole file
+                if newFolder == None:
+                        os.remove(usedFolder)
+                else:
+                    usedFiles = os.listdir(usedFolder)
+                    for file in usedFiles:
+                        shutil.move(file, newFolder)
 
 
     def MoveMusicFiles(self, dir = None):
