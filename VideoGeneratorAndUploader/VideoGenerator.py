@@ -47,7 +47,7 @@ class VideoGenerator():
         #Put the csv data into a list
         fileData = []
         pathCol = []
-        with open('D:\MassProduction\MusicDB.csv', 'r') as csv_file:
+        with open('D:\MassProduction\MusicDB.csv', 'r', encoding='utf-8') as csv_file:
             reader= csv.reader(csv_file)
             next(reader) #this code either skips the headers or skips the fist record
             for row in reader:

@@ -1,7 +1,9 @@
+import glob
 from pytube import YouTube
 from pathlib import Path
 from moviepy.editor import *
 import csv
+import unicodecsv
 import os
 
 class VideoDownloader:
@@ -59,6 +61,77 @@ class VideoDownloader:
             except Exception as e:
                 print(str(e))
                 break
+
+    def FindMissingFiles(cls):
+        #Get a list of song names from the db
+        (songsInDB, links) = cls.GetSongsInDB(cls)
+        #Get the names of all the downloaded music files. Both in the Music directory and used Music directory
+        downloadedSongs = cls.GetAllDownloadedSongs(cls)
+        #Compare both lists and see what files are missing
+        missingSongsLinks = set()
+        for idx, songfromDB in enumerate(songsInDB):
+            if not songfromDB in downloadedSongs:
+                missingSongsLinks.add(links[idx])
+
+        duplicateSongs = cls.GetDuplicateDownloadedSongs(cls)
+        diff = len(songsInDB) - (len(downloadedSongs) - len(duplicateSongs))
+        if not diff == len(missingSongsLinks):
+            print("something went wrong")
+
+        print(len(missingSongsLinks))
+
+
+    def FindMissingDBRecords(cls):
+        #Get a list of song names from the db
+        (songsInDB, links) = cls.GetSongsInDB(cls)
+        #Get the names of all the downloaded music files. Both in the Music directory and used Music directory
+        downloadedSongs = cls.GetAllDownloadedSongs(cls)
+        #Compare both lists and see what is missing in the database
+        missingRecords = set()
+        for idx, downloadedSong in enumerate(downloadedSongs):
+            if not downloadedSong in songsInDB:
+                missingRecords.add(links[idx])
+
+        print(f"{len(missingRecords)} records are missing in the Database")
+
+
+    def GetSongsInDB(cls):
+        songs = []
+        links = []
+        with open('D:\MassProduction\MusicDB.csv', 'r', encoding='utf-8') as csv_file:
+            # Read through each row of the csv and add the FileName and link to the lists
+            csv_reader= csv.reader(csv_file)
+            #next(csv_reader)
+            for row in csv_reader:
+                songs.append(row[1])
+                links.append(row[4])
+        
+        return (songs, links)
+        
+
+    def GetAllDownloadedSongs(cls):
+        songs = []
+        for file in glob.glob(cls.musicDir+"/**/*.mp3", recursive=True):
+            songs.append(Path(file).stem)
+
+        print(len(songs))
+        return songs
+
+    def GetDuplicateDownloadedSongs(cls):
+        songs = set()
+        duplicatesDownloaded = []
+        for file in glob.glob(cls.musicDir+"/**/*.mp3", recursive=True):
+            songName = Path(file).stem
+            if songName in songs:
+                duplicatesDownloaded.append(songName)
+            else:
+                songs.add(songName)
+        
+        print(str(len(duplicatesDownloaded))+" duplicate songs found")
+        return(duplicatesDownloaded)
+        
+
+
 
 
 #private methods

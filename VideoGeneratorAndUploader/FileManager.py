@@ -113,7 +113,7 @@ class FileManager:
                 if not newFolder == None:
                     usedFiles = os.listdir(usedFolder)
                     for file in usedFiles:
-                        shutil.move(file, newFolder)
+                        shutil.move(os.path.join(usedFolder, file), newFolder)
                 os.remove(usedFolder)
 
 

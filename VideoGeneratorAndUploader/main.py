@@ -16,9 +16,10 @@ try:
     generator.GenerateVideo(musicList)
     title = "Auto Upload Test " + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     uploader.startUpload(fileManager.outputFile, title, description, 10, "", "private")
-except: #Error
+except Exception as err: #Error
     fileManager.ReturnFiles() # move the music and images back
     print ("Video Genenaration failed")
+    print (err)
 else: #Success
     #fileManager.ReturnAndDeleteFiles()
     fileManager.ArchiveAllFiles() # Archive Music, Images, text, and video
