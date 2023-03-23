@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 import credentials as credentials
 import csv
+from VideoDownloader import VideoDownloader
 
 class YouTubeChannelScraper:
 
@@ -12,6 +13,9 @@ class YouTubeChannelScraper:
 
         self.youTube = build(
             api_service_name, api_version, developerKey=credentials.api_key)
+
+        (songsInDB, links) = VideoDownloader.GetSongsInDB(VideoDownloader)
+        self.videosInDB = links
 
 
     # Public Methods
@@ -82,8 +86,9 @@ class YouTubeChannelScraper:
         #Not working
         #videoLength = video['contentDetails']['duration']
         correctVideoType = "- Watch:" in description and "- Download/Stream:" in description
-        
-        if correctVideoType and len(list) < limit:
+        alreadyDownloaded = videoLink in self.videosInDB
+
+        if correctVideoType and len(list) < limit and not alreadyDownloaded:
             list.append(videoLink)
 
     def __PruneAlreadyDownloaded(self, list:list):

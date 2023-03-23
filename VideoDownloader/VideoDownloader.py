@@ -71,14 +71,17 @@ class VideoDownloader:
         missingSongsLinks = set()
         for idx, songfromDB in enumerate(songsInDB):
             if not songfromDB in downloadedSongs:
-                missingSongsLinks.add(links[idx])
+                missingSongsLinks.add(songfromDB)
 
         duplicateSongs = cls.GetDuplicateDownloadedSongs(cls)
         diff = len(songsInDB) - (len(downloadedSongs) - len(duplicateSongs))
         if not diff == len(missingSongsLinks):
             print("something went wrong")
 
-        print(len(missingSongsLinks))
+        print(f"{len(missingSongsLinks)} Files missing")
+
+        for song in missingSongsLinks:
+            print(song)
 
 
     def FindMissingDBRecords(cls):
@@ -90,7 +93,7 @@ class VideoDownloader:
         missingRecords = set()
         for idx, downloadedSong in enumerate(downloadedSongs):
             if not downloadedSong in songsInDB:
-                missingRecords.add(links[idx])
+                missingRecords.add(downloadedSong)
 
         print(f"{len(missingRecords)} records are missing in the Database")
 
@@ -124,7 +127,7 @@ class VideoDownloader:
             songName = Path(file).stem
             if songName in songs:
                 duplicatesDownloaded.append(songName)
-            else:
+            else: 
                 songs.add(songName)
         
         print(str(len(duplicatesDownloaded))+" duplicate songs found")
